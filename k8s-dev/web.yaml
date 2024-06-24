@@ -25,6 +25,6 @@ spec:
     spec:
       containers:
       - name: web
-        image: skaffold-node
+        image: creation00/skaffold-node
         ports:
           - containerPort: 3000
