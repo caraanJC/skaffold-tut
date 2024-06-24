@@ -1,0 +1,16 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: buildpacks-node-tutorial
+build:
+  artifacts:
+    - image: skaffold-buildpacks-node
+      docker:
+        dockerfile: Dockerfile
+test:
+- image: skaffold-buildpacks-node
+  custom:
+    - command: npm run test
+manifests:
+  rawYaml:
+    - k8s/web.yaml

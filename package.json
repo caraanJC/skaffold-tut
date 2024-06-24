@@ -1,0 +1,24 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "start.js",
+  "scripts": {
+    "start": "node start.js",
+    "test": "jest --forceExit --verbose --detectOpenHandles --runInBand"
+  },
+  "dependencies": {
+    "express": "^4.16.4",
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
+  },
+  "jest": {
+    "verbose": true,
+    "testTimeout": 1000000,
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/src/config/index.js",
+      "/tests"
+    ]
+  }
+}
