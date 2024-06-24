@@ -13,4 +13,4 @@ test:
     - command: npm run test
 manifests:
   rawYaml:
-    - k8s/web.yaml
+    - k8s-dev/web.yaml
