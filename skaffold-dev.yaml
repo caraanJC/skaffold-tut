@@ -3,10 +3,14 @@ kind: Config
 metadata:
   name: skaffold-tut
 build:
+  tagPolicy:
+    inputDigest: {}
   artifacts:
     - image: creation00/skaffold-node
       docker:
         dockerfile: Dockerfile
+  local:
+    push: true
 test:
 - image: creation00/skaffold-node
   custom:
