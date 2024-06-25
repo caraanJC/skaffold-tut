@@ -5,10 +5,12 @@ metadata:
 build:
   artifacts:
     - image: skaffold-node
+      context: ./backend
       docker:
         dockerfile: Dockerfile
 test:
 - image: skaffold-node
+  context: ./backend
   custom:
     - command: npm run test
 manifests:

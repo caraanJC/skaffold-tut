@@ -7,12 +7,14 @@ build:
     inputDigest: {}
   artifacts:
     - image: creation00/skaffold-node
+      context: ./backend
       docker:
         dockerfile: Dockerfile
   local:
     push: true
 test:
 - image: creation00/skaffold-node
+  context: ./backend
   custom:
     - command: npm run test
 manifests:
