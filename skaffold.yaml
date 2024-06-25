@@ -16,3 +16,9 @@ test:
 manifests:
   rawYaml:
     - k8s/web.yaml
+portForward:
+- resourceType: Service
+  resourceName: web
+  port: 3000
+  address: 127.0.0.1
+  localPort: 8080
