@@ -1,0 +1,18 @@
+{% extends 'layouts/main.html' %}
+
+{% block content %}
+    <h1 class="text-xl font-bold">Professional Cloud Architect Test Questions</h1>
+    <form hx-post="/select-question-set" hx-target="#questions">
+        Question Set:
+        <select name="questionSet">
+            {% for questionSet in questionSets %}
+                <option value="{{ questionSet }}">{{ questionSet }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="mt-2">Set</button>
+    </form>
+    <div class="w-full" id="questions">
+        {{ questions|safe }}
+    </div>
+
+{% endblock %}
