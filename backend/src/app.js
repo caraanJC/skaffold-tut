@@ -4,7 +4,7 @@ const express = require('express')
 const app = express()
 
 const nunjucks = require('nunjucks');
-const questions = require('./config/questions');
+const questions1 = require('./config/questions1');
 const { randomizeArray } = require('./helpers');
 const questionSets = require('./config/questionSets');
 nunjucks.configure("views", {
@@ -19,7 +19,7 @@ app.use(express.urlencoded({
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-    const randomizedQuestions = randomizeArray(questions)
+    const randomizedQuestions = randomizeArray(questions1)
 
     const questionForms = randomizedQuestions.map((question, index) => {
         const randomizedAnswers = randomizeArray(question.answers)
@@ -28,12 +28,14 @@ app.get('/', (req, res) => {
             <option name="answer" value="${answer}" class="cursor-pointer">${answer.replace(/-ans/g, '')}</option>
         `)
 
+        const questionImage = question.image ? `<img src="/assets/${question.image}">` : ''
+
         return `
             <form hx-post="/answer" hx-target="#result-${question.id}" hx-swap="innerHTML">
                 <p class="mt-5 mb-2">${index + 1}. ${question.question}</p>
+                ${questionImage}
                 <div>
                     <select name="answer" multiple class="${answers.length > 4 ? 'h-40' : 'h-30'} overflow-y-auto outline-none">
-
                         ${answers.join("")}
                     </select>
                 </div>
@@ -51,10 +53,11 @@ app.get('/', (req, res) => {
 
 app.post('/select-question-set', (req, res) => {
     const { questionSet } = req.body
+    const  questions = {
+        1: questions1
+    }
 
-    const filteredQuestionSet = questions.filter((question) => question.questionSet === + questionSet)
-
-    const randomizedQuestions = randomizeArray(filteredQuestionSet)
+    const randomizedQuestions = randomizeArray(questions.hasOwnProperty(questionSet) ? questions[`${questionSet}`] : [])
         
     const questionForms = randomizedQuestions.map((question, index) => {
         const randomizedAnswers = randomizeArray(question.answers)
@@ -77,7 +80,7 @@ app.post('/select-question-set', (req, res) => {
             </form>
         `
     }).join('')
-    console.log(questionForms)
+
     res.status(200).send(questionForms)
 })
 app.post('/answer', (req, res) => {
