@@ -4,9 +4,10 @@ const express = require('express')
 const app = express()
 
 const nunjucks = require('nunjucks');
-const questions1 = require('./config/questions1');
+const questions1 = require('./config/cloudArchitect/questions1');
 const { randomizeArray } = require('./helpers');
-const questionSets = require('./config/questionSets');
+const questionSets = require('./config/cloudArchitect/questionSets');
+const question4 = require('./config/cloudArchitect/question4');
 nunjucks.configure("views", {
     autoescape: true,
     express: app
@@ -54,7 +55,8 @@ app.get('/', (req, res) => {
 app.post('/select-question-set', (req, res) => {
     const { questionSet } = req.body
     const  questions = {
-        1: questions1
+        1: questions1,
+        4: question4
     }
 
     const randomizedQuestions = randomizeArray(questions.hasOwnProperty(questionSet) ? questions[`${questionSet}`] : [])
@@ -87,8 +89,6 @@ app.post('/answer', (req, res) => {
     let response = `<span class="text-red-500">Wrong</span>`
 
     const { answer } = req.body
-
-    console.log(answer)
 
     if (Array.isArray(answer)) {
         let isAnswerCorrect = true
