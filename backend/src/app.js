@@ -7,7 +7,9 @@ const nunjucks = require('nunjucks');
 const questions1 = require('./config/cloudArchitect/questions1');
 const { randomizeArray } = require('./helpers');
 const questionSets = require('./config/cloudArchitect/questionSets');
-const question4 = require('./config/cloudArchitect/question4');
+const questions4 = require('./config/cloudArchitect/questions4');
+const store = require('store')
+const { ulid } = require('ulid')
 nunjucks.configure("views", {
     autoescape: true,
     express: app
@@ -19,68 +21,75 @@ app.use(express.urlencoded({
 }))
 app.use(express.static('public'));
 
+const questions = {
+    1: questions1,
+    4: questions4
+}
+
+const createAnswersAndQuestions = (question, randomizedAnswers, index) => {
+    const answers = question.isMultiple ? randomizedAnswers.map((answer) => {
+        const answerId = ulid()
+        return `
+            <p>
+                <input type="checkbox" id="${answerId}" name="answer" value="${answer}">
+                <label for="${answerId}">${answer.replace(/-ans/g, '')}</label>
+            </p>
+        `
+    }).join("") : randomizedAnswers.map((answer) => {
+        const answerId = ulid()
+
+        return `
+            <p>
+                <input type="radio" id="${answerId}" name="answer" value="${answer}">
+                <label for="${answerId}">${answer.replace(/-ans/g, '')}</label>
+            </p>
+        `
+    }).join("")
+
+    const questionImage = question.image ? `<img src="/assets/${question.image}">` : ''
+
+    return `
+        <form hx-post="/answer" hx-target="#result-${question.id}" hx-swap="innerHTML">
+            <p class="mt-5 mb-2">${index + 1}. ${question.question}</p>
+            ${questionImage}
+            <div>
+                ${answers}
+            </div>
+            <button type="submit" class="mt-2">Submit</button>
+            <span id="result-${question.id}"></span>
+        </form> 
+    `
+}
+
 app.get('/', (req, res) => {
-    const randomizedQuestions = randomizeArray(questions1)
+    const questionSet = Number(store.get('questionSet') ?? 1)
+    const randomizedQuestions = randomizeArray(questions[`${+questionSet}`])
 
     const questionForms = randomizedQuestions.map((question, index) => {
         const randomizedAnswers = randomizeArray(question.answers)
 
-        const answers = randomizedAnswers.map((answer) => `
-            <option name="answer" value="${answer}" class="cursor-pointer">${answer.replace(/-ans/g, '')}</option>
-        `)
-
-        const questionImage = question.image ? `<img src="/assets/${question.image}">` : ''
-
-        return `
-            <form hx-post="/answer" hx-target="#result-${question.id}" hx-swap="innerHTML">
-                <p class="mt-5 mb-2">${index + 1}. ${question.question}</p>
-                ${questionImage}
-                <div>
-                    <select name="answer" multiple class="${answers.length > 4 ? 'h-40' : 'h-30'} overflow-y-auto outline-none">
-                        ${answers.join("")}
-                    </select>
-                </div>
-                <button type="submit" class="mt-2">Submit</button>
-                <span id="result-${question.id}"></span>
-            </form>
-        `
+        return createAnswersAndQuestions(question, randomizedAnswers, index)
     }).join('')
 
     res.render("pages/questions.html", {
         questions: questionForms,
-        questionSets
+        questionSetOptions: questionSets.map((qSet) => {
+            const isSelected = Number(qSet) === questionSet
+            return `<option value="${qSet}" ${isSelected ? 'selected' : ''}>${qSet}</option>`
+        })
     })
 })
 
 app.post('/select-question-set', (req, res) => {
     const { questionSet } = req.body
-    const  questions = {
-        1: questions1,
-        4: question4
-    }
+    store.set('questionSet', questionSet)
 
     const randomizedQuestions = randomizeArray(questions.hasOwnProperty(questionSet) ? questions[`${questionSet}`] : [])
-        
+
     const questionForms = randomizedQuestions.map((question, index) => {
         const randomizedAnswers = randomizeArray(question.answers)
 
-        const answers = randomizedAnswers.map((answer) => `
-            <option name="answer" value="${answer}" class="cursor-pointer">${answer.replace(/-ans/g, '')}</option>
-        `)
-
-        return `
-            <form hx-post="/answer" hx-target="#result-${question.id}" hx-swap="innerHTML">
-                <p class="mt-5 mb-2">${index + 1}. ${question.question}</p>
-                <div>
-                    <select name="answer" multiple class="${answers.length > 4 ? 'h-40' : 'h-30'} overflow-y-auto outline-none">
-
-                        ${answers.join("")}
-                    </select>
-                </div>
-                <button type="submit" class="mt-2">Submit</button>
-                <span id="result-${question.id}"></span>
-            </form>
-        `
+        return createAnswersAndQuestions(question, randomizedAnswers, index)
     }).join('')
 
     res.status(200).send(questionForms)

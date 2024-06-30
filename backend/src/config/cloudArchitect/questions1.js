@@ -22,6 +22,7 @@ module.exports = [
     {
         id: 3,
         question: "The operations manager asks you for a list of recommended practices that she should consider when migrating a J2EE application to the cloud. Which three practices should you recommend? (Choose three.)",
+        isMultiple: true,
         answers: [
             "Port the application code to run on Google App Engine",
             "Integrate Cloud Dataflow into the application to capture real-time metrics",
