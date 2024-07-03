@@ -68,6 +68,27 @@ when connectivity is established?`,
             "Create a Cloud VPN connection from the new VPC to the data center, and apply a firewall rule that blocks the overlapping IP space.",
         ]
     },
-
-
+    {
+        id: 119,
+        question: `You need to migrate Hadoop jobs for your company's Data Science team without modifying the underlying infrastructure. You want to minimize
+costs and infrastructure management effort. What should you do?`,
+        answers: [
+            "Create a Dataproc cluster using standard worker instances.",
+            "Create a Dataproc cluster using preemptible worker instances. -ans",
+            "Manually deploy a Hadoop cluster on Compute Engine using standard instances.",
+            "Manually deploy a Hadoop cluster on Compute Engine using preemptible instances.",
+        ]
+    },
+    {
+        id: 120,
+        question: `Your company has a project in Google Cloud with three Virtual Private Clouds (VPCs). There is a Compute Engine instance on each VPC. Network
+subnets do not overlap and must remain separated. The network configuration is shown below.`,
+        image: 'code-image-2.png',
+        answers: [
+            "Create a cloud router to advertise subnet #2 and subnet #3 to subnet #1.",
+            "Add two additional NICs to Instance #1 with the following configuration: ג€¢ NIC1 ג ›—VPC: VPC #2 ג ›—SUBNETWORK: subnet #2 ג€¢ NIC2 ג ›—VPC: VPC #3 ג ›—SUBNETWORK: subnet #3 Update firewall rules to enable traffic between instances. -ans",
+            "Create two VPN tunnels via CloudVPN: 1 ¢€ג between VPC #1 and VPC #2. 1 ¢€ג between VPC #2 and VPC #3. Update firewall rules to enable traffic between the instances.",
+            "Peer all three VPCs: ג€¢ Peer VPC #1 with VPC #2. ג€¢ Peer VPC #2 with VPC #3. Update firewall rules to enable traffic between the instances."
+        ]
+    }
 ]

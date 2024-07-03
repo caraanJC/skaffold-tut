@@ -9,7 +9,8 @@ const { randomizeArray } = require('./helpers');
 const questionSets = require('./config/cloudArchitect/questionSets');
 const questions4 = require('./config/cloudArchitect/questions4');
 const store = require('store')
-const { ulid } = require('ulid')
+const { ulid } = require('ulid');
+const questions5 = require('./config/cloudArchitect/questions5');
 nunjucks.configure("views", {
     autoescape: true,
     express: app
@@ -23,7 +24,8 @@ app.use(express.static('public'));
 
 const questions = {
     1: questions1,
-    4: questions4
+    4: questions4,
+    5: questions5
 }
 
 const createAnswersAndQuestions = (question, randomizedAnswers, index) => {
@@ -49,13 +51,13 @@ const createAnswersAndQuestions = (question, randomizedAnswers, index) => {
     const questionImage = question.image ? `<img src="/assets/${question.image}">` : ''
 
     return `
-        <form hx-post="/answer" hx-target="#result-${question.id}" hx-swap="innerHTML">
-            <p class="mt-5 mb-2">${index + 1}. ${question.question}</p>
+        <form hx-post="/answer" hx-target="#result-${question.id}" hx-swap="innerHTML" class="bg-white rounded-lg p-5 mt-5 text-gray-800">
+            <p class="mb-2">${index + 1}. ${question.question}</p>
             ${questionImage}
             <div>
                 ${answers}
             </div>
-            <button type="submit" class="mt-2">Submit</button>
+            <button type="submit" class="mt-2 border-2 border-black border-solid rounded-lg px-3 py-1">Submit</button>
             <span id="result-${question.id}"></span>
         </form> 
     `
